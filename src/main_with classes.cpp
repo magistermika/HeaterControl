@@ -169,9 +169,9 @@ class Heater {
         Heater();
         float getTemp();
         float getHumi();
-        setDesiredTemp(float temp);
+        void setDesiredTemp(float temp);
         bool heaterOn();
-        turnHeaterOn();
+        void turnHeaterOn();
 
     private:
         int temp;
