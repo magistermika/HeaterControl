@@ -21,9 +21,7 @@ unsigned long counter = 1;
 unsigned long prevMillis = 0;
 unsigned long currentMillis = 0;
 float temp = 0;
-float humi= 0;
-bool ledOn = false;
-bool relayOn = false;
+float humi = 0;
 
 WiFiServer server(80);
 DHT12 dht12;
@@ -66,7 +64,7 @@ void setup() {
 }
  
 void loop() {
-  //poll the senzor every 5000 seconds
+  //poll the sensor every 5000 seconds
   currentMillis = millis();
   if (currentMillis - prevMillis > pollInterval) {
     prevMillis = currentMillis;
@@ -92,7 +90,6 @@ void loop() {
   client.flush();
  
   // Match the request
- 
   int value = LOW;
   if (request.indexOf("/Heater=ON") != -1) {
     heaterMode(manualOn);
@@ -141,7 +138,6 @@ void loop() {
   delay(1);
   Serial.println("Client disconnected");
   Serial.println("");
- 
 }
 
 class Heater {
@@ -158,7 +154,6 @@ class Heater {
         int temp;
         int humi;
         bool _isHeaterOn;
-        bool ledOn;
 }
 
 void Heater::heaterMode(char mode) {
