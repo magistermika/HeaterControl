@@ -1,58 +1,30 @@
-#include <WEMOS_DHT12.h>
+//#include <WEMOS_DHT12.h>
 #include <ESP8266WiFi.h>
 #include <settings.h>
 #include <Wire.h>
+#include <Heater.cpp>
 
 //change wire pins because relay will be on D1
 const int sclPin = D5;
 const int sdaPin = D2;
 
-const int relayPin = D1;
 const int pollInterval = 5000;
-const int desiredTemp = 24;
 
 const char* ssid = _ssid;
 const char* password = _password;
 
-
-int ledPin = BUILTIN_LED;
-
 unsigned long counter = 1;
 unsigned long prevMillis = 0;
 unsigned long currentMillis = 0;
-float temp = 0;
-float humi = 0;
-
-class Heater {
-public:
-    Heater();
-    void heaterMode(const char* mode);
-    float getTemp();
-    float getHumi();
-    void refresh();
-    void setDesiredTemp(float temp);
-    void heaterOn(bool on);
-    bool heaterState();
-
-private:
-    int _temp;
-    int _humi;
-    bool _isHeaterOn;
-};
 
 WiFiServer server(80);
-DHT12 dht12;
 Heater heater;
 
 void setup() {
-  pinMode(relayPin, OUTPUT);
-  pinMode(ledPin, OUTPUT);
 
   Wire.begin(sdaPin, sclPin);
   Serial.begin(115200);
   delay(10);
- 
-  digitalWrite(ledPin, HIGH);
  
   // Connect to WiFi network
   Serial.println();
@@ -154,48 +126,4 @@ void loop() {
   delay(1);
   Serial.println("Client disconnected");
   Serial.println("");
-}
-
-void Heater::heaterMode(const char* mode) {
-  if (mode == "manualOn") {
-    heaterOn(true);
-    return;
-  }
-  if (mode == "manualOff") {
-    heaterOn(false);
-    return;
-  }
-  else {
-    if (dht12.cTemp < desiredTemp) {
-      heaterOn(true);
-    }
-    else {
-      heaterOn(false);
-    }
-    return;
-  }
-}
-
-void Heater::heaterOn(bool on) {
-  if (on) {
-    digitalWrite(ledPin, LOW);
-    digitalWrite(relayPin, HIGH);
-    _isHeaterOn = true;
-  }
-  else {
-    digitalWrite(ledPin, HIGH);
-    digitalWrite(relayPin, LOW);
-    _isHeaterOn = false;
-  }
-}
-
-bool Heater::heaterState() {
-  return _isHeaterOn;
-}
-
-void Heater::refresh() {
-  if (dht12.get()) {
-    _temp = dht12.cTemp;
-    _humi = dht12.humidity;
-  }  
 }
