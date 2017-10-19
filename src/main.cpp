@@ -82,15 +82,12 @@ void loop() {
   // Match the request
   if (request.indexOf("/Heater=ON") != -1) {
     heater.heaterMode(1);
-//    client.print("heater Mode 1");
   } 
-  if (request.indexOf("/Heater=AUTO") != -1) {
+  else if (request.indexOf("/Heater=AUTO") != -1) {
     heater.heaterMode(2);
-//    client.print("heater Mode 2");
   }
-  else {
+  else if (request.indexOf("/Heater=OFF") != -1) {
     heater.heaterMode(0);
-//    client.print("heater Mode 0");
   }
  
   // Return the response
@@ -110,7 +107,7 @@ void loop() {
     
   client.println("<br><br>");
   client.println("Click <a href=\"/Heater=ON\">here to turn heater ON</a><br>");
-  client.println("Click <a href=\"/\">here to turn heater OFF</a><br>");
+  client.println("Click <a href=\"/Heater=OFF\">here to turn heater OFF</a><br>");
   client.println("Click <a href=\"/Heater=AUTO\">here to set to AUTO mode</a><br>");
   
   client.println("============<br> Temperature Control <br>============");

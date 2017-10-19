@@ -25,7 +25,7 @@ void Heater::heaterMode(int mode) {
     heaterOn(true);
     return;
   }
-  if (mode == 0) {
+  else if (mode == 0) {
     heaterOn(false);
     return;
   } 
@@ -33,8 +33,8 @@ void Heater::heaterMode(int mode) {
     if (dht12.cTemp < desiredTemp) {
         heaterOn(true);
         } 
-    else {
-        heaterOn(false);
+    else if ( dht12.cTemp >= desiredTemp ) {
+            heaterOn(false);
         }
     }
 }
