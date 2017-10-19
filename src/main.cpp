@@ -2,7 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <settings.h>
 #include <Wire.h>
-#include <Heater.cpp>
+#include <Heater.h>
 
 //change wire pins because relay will be on D1
 const int sclPin = D5;
@@ -18,7 +18,8 @@ unsigned long prevMillis = 0;
 unsigned long currentMillis = 0;
 
 WiFiServer server(80);
-Heater heater;
+DHT12 dht12;
+Heater heater(dht12);
 
 void setup() {
 

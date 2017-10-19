@@ -1,30 +1,11 @@
 
-#include <WEMOS_DHT12.h>
-DHT12 dht12;
+#include "Heater.h"
 
 const int desiredTemp = 24;
 const int relayPin = D1;
-int ledPin = BUILTIN_LED;
+const int ledPin = BUILTIN_LED;
 
-
-class Heater {
-public:
-    Heater();
-    void heaterMode(const char* mode);
-    float getTemp();
-    float getHumi();
-    void refresh();
-    void setDesiredTemp(float temp);
-    void heaterOn(bool on);
-    bool heaterState();
-
-private:
-    float _temp;
-    float _humi;
-    bool _isHeaterOn;
-};
-
-Heater::Heater() {
+Heater::Heater(DHT12& dht) :dht12(dht) {
     pinMode(relayPin, OUTPUT);
     pinMode(ledPin, OUTPUT);
     digitalWrite(ledPin, HIGH);
@@ -43,18 +24,16 @@ void Heater::heaterMode(const char* mode) {
     heaterOn(true);
     return;
   }
+
   if (mode == "manualOff") {
     heaterOn(false);
     return;
-  }
-  else {
-    if (dht12.cTemp < desiredTemp) {
-      heaterOn(true);
-    }
-    else {
-      heaterOn(false);
-    }
-    return;
+  } 
+
+  if (dht12.cTemp < desiredTemp) {
+    heaterOn(true);
+  } else {
+    heaterOn(false);
   }
 }
 
