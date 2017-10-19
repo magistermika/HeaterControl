@@ -1,6 +1,6 @@
 #include <WEMOS_DHT12.h>
 #include <ESP8266WiFi.h>
-
+#include <settings.h>
 #include <Wire.h>
 
 //change wire pins because relay will be on D1
@@ -11,8 +11,8 @@ const int relayPin = D1;
 const int pollInterval = 5000;
 const int desiredTemp = 24;
 
-const char* ssid = "ssidname";
-const char* password = "password";
+const char* ssid = _ssid;
+const char* password = _password;
 
 
 int ledPin = BUILTIN_LED;
@@ -27,6 +27,7 @@ bool relayOn = false;
 
 WiFiServer server(80);
 DHT12 dht12;
+Heater heater;
 
 void setup() {
   pinMode(relayPin, OUTPUT);
@@ -35,7 +36,6 @@ void setup() {
   Wire.begin(sdaPin, sclPin);
   Serial.begin(115200);
   delay(10);
- 
  
   digitalWrite(ledPin, HIGH);
  
@@ -71,6 +71,7 @@ void loop() {
   if (currentMillis - prevMillis > pollInterval) {
     prevMillis = currentMillis;
     Heater.refresh();    
+    counter++;
   }  
   // Check if a client has connected
   WiFiClient client = server.available();
@@ -93,15 +94,14 @@ void loop() {
   // Match the request
  
   int value = LOW;
-  if (request.indexOf("/LED=ON") != -1) {
-    digitalWrite(ledPin, LOW);
-    digitalWrite(relayPin, HIGH);
-    value = HIGH;
+  if (request.indexOf("/Heater=ON") != -1) {
+    heaterMode(manualOn);
   } 
-  if (request.indexOf("/LED=OFF") != -1){
-    digitalWrite(ledPin, HIGH);
-    digitalWrite(relayPin, LOW);
-    value = LOW;
+  if (request.indexOf("/Heater=AUTO") != -1) {
+    heaterMode(automode);
+  }
+  else {
+    heaterMode(manualOff);
   }
  
   // Return the response
@@ -111,34 +111,27 @@ void loop() {
   client.println("<!DOCTYPE HTML>");
   client.println("<html>");
  
-  client.print("Led pin is now: ");
- 
-  if(value == LOW) {
-    client.print("Off<br>");  
+  client.print("Heater is now ");
+  client.print(heaterState());
+  if(heaterState() == false) {
+    client.print(" Off<br>");
   } else {
-    client.print("On<br>");
+    client.print(" On<br>");
   }
-  
-  client.print("Relay is now: ");
-  if(value == LOW) {
-    client.print("OFF<br>");  
-  } else {
-    client.print("ON<br>");
-  }
-
-  
+    
   client.println("<br><br>");
-  client.println("Click <a href=\"/LED=ON\">here</a> turn the LED   ON<br>");
-  client.println("Click <a href=\"/LED=OFF\">here</a> turn the LED   OFF<br>");
-  client.println(dht12.get());
-  client.println("======= Cel mai boss de server cu temperatura/umiditate =======");
+  client.println("Click <a href=\"/Heater=ON\">here to turn heater ON</a><br>");
+  client.println("Click <a href=\"/\">here to turn heater OFF</a><br>");
+  client.println("Click <a href=\"/Heater=AUTO\">here to set to AUTO mode</a><br>");
+  
+  client.println("============<br> Temperature Control <br>============");
   client.println("<br><br>");
 
   client.println("Temperature in Celsius : ");
-    client.println(dht12.cTemp);
+    client.println(heater.getTemp());
     client.println("<br>");
     client.print("Relative Humidity : ");
-    client.println(dht12.humidity);
+    client.println(heater.getHumi());
     client.println("<br>END");
     client.println(counter);
 
@@ -199,7 +192,6 @@ void Heater::heaterOn(bool on) {
     digitalWrite(relayPin, LOW);
     _isHeaterOn = false;
   }
-  return;
 }
 
 bool Heater::heaterState() {
