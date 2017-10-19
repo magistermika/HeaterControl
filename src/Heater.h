@@ -6,7 +6,7 @@
 class Heater {
 public:
     Heater(DHT12& dht12);
-    void heaterMode(const char* mode);
+    void heaterMode(int mode);
     float getTemp();
     float getHumi();
     void refresh();
@@ -20,6 +20,5 @@ private:
     float _humi;
     bool _isHeaterOn;
 };
-
 
 #endif

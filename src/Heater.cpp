@@ -1,7 +1,8 @@
+//beni delivered the magic
 
 #include "Heater.h"
 
-const int desiredTemp = 24;
+const float desiredTemp = 26;
 const int relayPin = D1;
 const int ledPin = BUILTIN_LED;
 
@@ -19,26 +20,27 @@ float Heater::getHumi() {
     return _humi;
 }
 
-void Heater::heaterMode(const char* mode) {
-  if (mode == "manualOn") {
+void Heater::heaterMode(int mode) {
+  if (mode == 1) {
     heaterOn(true);
     return;
   }
-
-  if (mode == "manualOff") {
+  if (mode == 0) {
     heaterOn(false);
     return;
   } 
-
-  if (dht12.cTemp < desiredTemp) {
-    heaterOn(true);
-  } else {
-    heaterOn(false);
-  }
+  else { 
+    if (dht12.cTemp < desiredTemp) {
+        heaterOn(true);
+        } 
+    else {
+        heaterOn(false);
+        }
+    }
 }
 
 void Heater::heaterOn(bool on) {
-  if (on) {
+  if (on == true) {
     digitalWrite(ledPin, LOW);
     digitalWrite(relayPin, HIGH);
     _isHeaterOn = true;

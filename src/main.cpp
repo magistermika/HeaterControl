@@ -81,13 +81,16 @@ void loop() {
  
   // Match the request
   if (request.indexOf("/Heater=ON") != -1) {
-    heater.heaterMode("manualOn");
+    heater.heaterMode(1);
+//    client.print("heater Mode 1");
   } 
   if (request.indexOf("/Heater=AUTO") != -1) {
-    heater.heaterMode("automode");
+    heater.heaterMode(2);
+//    client.print("heater Mode 2");
   }
   else {
-    heater.heaterMode("manualOff");
+    heater.heaterMode(0);
+//    client.print("heater Mode 0");
   }
  
   // Return the response
