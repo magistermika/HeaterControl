@@ -9,7 +9,7 @@ const int sdaPin = D2;
 
 const int relayPin = D1;
 const int pollInterval = 5000;
-const int desiredTemp = 25;
+const int desiredTemp = 24;
 
 const char* ssid = "ssidname";
 const char* password = "password";
@@ -70,20 +70,7 @@ void loop() {
   currentMillis = millis();
   if (currentMillis - prevMillis > pollInterval) {
     prevMillis = currentMillis;
-    if (dht12.get() == 0 && counter++) {
-      temp = dht12.cTemp;
-      humi = dht12.humidity;
-      
-      
-      if (dht12.cTemp > desiredTemp) {
-        digitalWrite(ledPin, LOW);
-        digitalWrite(relayPin, HIGH);
-      }
-      else {
-        digitalWrite(ledPin, HIGH);
-        digitalWrite(relayPin, LOW);
-      }
-    }  
+    Heater.refresh();    
   }  
   // Check if a client has connected
   WiFiClient client = server.available();
@@ -166,12 +153,13 @@ void loop() {
 
 class Heater {
     public:
-        Heater();
+        void heaterControl();
         float getTemp();
         float getHumi();
+        void refresh();
         void setDesiredTemp(float temp);
         bool heaterOn();
-        void turnHeaterOn();
+        void heaterState(char state);
 
     private:
         int temp;
@@ -179,6 +167,39 @@ class Heater {
         bool heaterOn;
         bool ledOn;
 }
+
+void Heater::heaterState(char state) {
+  if (state == manualOn) {
+    heaterOn(true);
+    return;
+  }
+  if (state == manualOff) {
+    heaterOn(false);
+    return;
+  }
+  else {
+    if (dht12.cTemp > desiredTemp) {
+      digitalWrite(ledPin, LOW);
+      digitalWrite(relayPin, HIGH);
+    }
+    else {
+      digitalWrite(ledPin, HIGH);
+      digitalWrite(relayPin, LOW);
+    }
+    return;
+  }
+  
+
+}
+
+void Heater::refresh() {
+  if (dht12.get()) {
+    Heater.temp = dht12.cTemp;
+    Heater.temp = dht12.humidity;
+}
+
+void Heater::heaterControl
+
 
 char ledOn(bool state) {
   if (state == true) digitalWrite(ledPin, LOW) return "ON";
