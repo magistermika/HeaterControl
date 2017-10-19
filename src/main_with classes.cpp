@@ -153,55 +153,61 @@ void loop() {
 
 class Heater {
     public:
-        void heaterControl();
+        void heaterMode(char mode);
         float getTemp();
         float getHumi();
         void refresh();
         void setDesiredTemp(float temp);
-        bool heaterOn();
-        void heaterState(char state);
+        void heaterOn(bool on);
+        bool heaterState();
 
     private:
         int temp;
         int humi;
-        bool heaterOn;
+        bool _isHeaterOn;
         bool ledOn;
 }
 
-void Heater::heaterState(char state) {
-  if (state == manualOn) {
+void Heater::heaterMode(char mode) {
+  if (mode == manualOn) {
     heaterOn(true);
     return;
   }
-  if (state == manualOff) {
+  if (mode == manualOff) {
     heaterOn(false);
     return;
   }
   else {
-    if (dht12.cTemp > desiredTemp) {
-      digitalWrite(ledPin, LOW);
-      digitalWrite(relayPin, HIGH);
+    if (dht12.cTemp < desiredTemp) {
+      heaterOn(true);
     }
     else {
-      digitalWrite(ledPin, HIGH);
-      digitalWrite(relayPin, LOW);
+      heaterOn(false);
     }
     return;
   }
-  
+}
 
+void Heater::heaterOn(bool on) {
+  if (on) {
+    digitalWrite(ledPin, LOW);
+    digitalWrite(relayPin, HIGH);
+    _isHeaterOn = true;
+  }
+  else {
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(relayPin, LOW);
+    _isHeaterOn = false;
+  }
+  return;
+}
+
+bool Heater::heaterState() {
+  return _isHeaterOn;
 }
 
 void Heater::refresh() {
   if (dht12.get()) {
     Heater.temp = dht12.cTemp;
     Heater.temp = dht12.humidity;
-}
-
-void Heater::heaterControl
-
-
-char ledOn(bool state) {
-  if (state == true) digitalWrite(ledPin, LOW) return "ON";
-  else digitalWrite(ledPin, HIGH) return "OFF";
 }
