@@ -22,21 +22,28 @@ float Heater::getHumi() {
 
 void Heater::heaterMode(int mode) {
   if (mode == 1) {
+    _autoMode = false;
     heaterOn(true);
     return;
   }
   else if (mode == 0) {
+    _autoMode = false;
     heaterOn(false);
     return;
   } 
   else { 
+    _autoMode = true;  
     if (dht12.cTemp < desiredTemp) {
         heaterOn(true);
         } 
-    else if ( dht12.cTemp >= desiredTemp ) {
+    else if (dht12.cTemp >= desiredTemp) {
             heaterOn(false);
         }
     }
+}
+
+bool Heater::isInAutoMode() {
+    return _autoMode;
 }
 
 void Heater::heaterOn(bool on) {

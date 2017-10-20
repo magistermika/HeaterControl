@@ -13,12 +13,14 @@ public:
     void setDesiredTemp(float temp);
     void heaterOn(bool on);
     bool heaterState();
+    bool isInAutoMode();
 
 private:
     DHT12& dht12;
     float _temp;
     float _humi;
     bool _isHeaterOn;
+    bool _autoMode;
 };
 
 #endif

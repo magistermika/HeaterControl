@@ -59,6 +59,9 @@ void loop() {
   if (currentMillis - prevMillis > pollInterval) {
     prevMillis = currentMillis;
     heater.refresh();    
+    if (heater.isInAutoMode() == true) {
+      heater.heaterMode(2);
+    }
     counter++;
   }  
   // Check if a client has connected
