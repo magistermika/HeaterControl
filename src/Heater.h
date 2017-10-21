@@ -10,10 +10,13 @@ public:
     float getTemp();
     float getHumi();
     void refresh();
-    void setDesiredTemp(float temp);
+    void setDesiredTemp(float setTemp);
+    float getDesiredTemp();
     void heaterOn(bool on);
     bool heaterState();
     bool isInAutoMode();
+    void setDesiredTempMinus();
+    void setDesiredTempPlus();
 
 private:
     DHT12& dht12;
@@ -21,6 +24,7 @@ private:
     float _humi;
     bool _isHeaterOn;
     bool _autoMode;
+    float _desiredTemp;
 };
 
 #endif

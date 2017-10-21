@@ -2,7 +2,6 @@
 
 #include "Heater.h"
 
-const float desiredTemp = 26;
 const int relayPin = D1;
 const int ledPin = BUILTIN_LED;
 
@@ -10,6 +9,7 @@ Heater::Heater(DHT12& dht) :dht12(dht) {
     pinMode(relayPin, OUTPUT);
     pinMode(ledPin, OUTPUT);
     digitalWrite(ledPin, HIGH);
+    _desiredTemp = 25;
 }
 
 float Heater::getTemp() {
@@ -18,6 +18,21 @@ float Heater::getTemp() {
 
 float Heater::getHumi() {
     return _humi;
+}
+
+float Heater::getDesiredTemp() {
+    return _desiredTemp;
+}
+
+void Heater::setDesiredTemp(float setTemp) {
+    _desiredTemp = setTemp;
+}
+
+void Heater::setDesiredTempMinus() {
+  _desiredTemp--;
+}
+void Heater::setDesiredTempPlus() {
+  _desiredTemp++;
 }
 
 void Heater::heaterMode(int mode) {
@@ -33,10 +48,10 @@ void Heater::heaterMode(int mode) {
   } 
   else { 
     _autoMode = true;  
-    if (dht12.cTemp < desiredTemp) {
+    if (dht12.cTemp < _desiredTemp) {
         heaterOn(true);
         } 
-    else if (dht12.cTemp >= desiredTemp) {
+    else if (dht12.cTemp >= _desiredTemp) {
             heaterOn(false);
         }
     }
