@@ -9,7 +9,7 @@ Heater::Heater(DHT12& dht) :dht12(dht) {
     pinMode(relayPin, OUTPUT);
     pinMode(ledPin, OUTPUT);
     digitalWrite(ledPin, HIGH);
-    _desiredTemp = 25;
+    _desiredTemp = 22;
 }
 
 float Heater::getTemp() {

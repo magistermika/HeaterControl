@@ -106,16 +106,24 @@ void loop() {
   client.println("<!DOCTYPE HTML>");
   client.println("<html>");
   
-  client.println("<a href=\"/\">================<br> Temperature Control <br>================</a><br>");  
+  client.println("<h1><a href=\"/\">Temperature Control <br>================</a><br></h1>");  
   client.print("Heater is now   ");
   client.print(heater.heaterState());
   if(heater.heaterState() == false) {
-    client.print(" OFF<br>");
-  } else {
-    client.print(" ON<br>");
-  }
-    
-  client.println("<br><br>");
+    client.print("<off style=\"color:red\"> OFF</off><br>");
+    } else {
+      client.print(" ON<br>");
+    }
+  client.print("Mode set to: ");
+  if(heater.isInAutoMode() == false) {
+    client.print(" MANUAL<br>");
+    } else {
+      client.print(" AUTO<br>");
+    }
+
+
+
+  client.println("<br>");
   client.println("Click <a href=\"/Heater=ON\">here to turn heater ON</a><br>");
   client.println("Click <a href=\"/Heater=OFF\">here to turn heater OFF</a><br><br>");
   client.println("Click <a href=\"/Heater=AUTO\">here to set to AUTO mode</a><br>");
@@ -123,7 +131,7 @@ void loop() {
   client.println(heater.getDesiredTemp());
   client.println(" C <a href=\"/temp-plus\"</a> PLUS++");
   client.println("<br>");
-  client.println("<br><br><br>");
+  client.println("<br><br>");
 
   client.println("Temperature in Celsius : ");
     client.println(heater.getTemp());
