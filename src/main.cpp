@@ -4,6 +4,7 @@
 #include <Wire.h>
 #include <Heater.h>
 //#include <FS.h>
+#include <ESP8266mDNS.h>
 
 //change wire pins because relay will be on D1
 const int sclPin = D5;
@@ -28,6 +29,9 @@ void setup() {
   delay(10);
  
   // Connect to WiFi network
+  WiFi.hostname("summer");
+  MDNS.begin("summer"); //why is this not working?
+
   Serial.println();
   Serial.println();
   Serial.print("Connecting to ");

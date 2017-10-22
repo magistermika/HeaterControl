@@ -1,4 +1,4 @@
-//beni delivered the magic
+//beni delivered the constructor magic
 
 #include "Heater.h"
 
