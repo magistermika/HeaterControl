@@ -29,9 +29,10 @@ void setup() {
   delay(10);
  
   // Connect to WiFi network
+  WiFi.mode(WIFI_AP_STA);
   WiFi.hostname("summer");
   MDNS.begin("summer"); //why is this not working?
-
+  
   Serial.println();
   Serial.println();
   Serial.print("Connecting to ");
