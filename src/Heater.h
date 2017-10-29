@@ -5,7 +5,7 @@
 
 class Heater {
 public:
-    Heater(DHT12& dht12);
+    Heater();
     void heaterMode(int mode);
     float getTemp();
     float getHumi();
@@ -19,7 +19,7 @@ public:
     void setDesiredTempPlus();
 
 private:
-    DHT12& dht12;
+    DHT12 dht12;
     float _temp;
     float _humi;
     bool _isHeaterOn;

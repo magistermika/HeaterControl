@@ -10,7 +10,7 @@
 const int sclPin = D5;
 const int sdaPin = D2;
 
-const int pollInterval = 50000;
+const int pollInterval = 60000;
 
 const char* ssid = _ssid;
 const char* password = _password;
@@ -20,8 +20,8 @@ unsigned long prevMillis = 0;
 unsigned long currentMillis = 0;
 
 WiFiServer server(80);
-DHT12 dht12;
-Heater heater(dht12);
+//DHT12 dht12;
+Heater heater;
 
 void setup() {
   Wire.begin(sdaPin, sclPin);
@@ -58,7 +58,7 @@ void setup() {
 }
  
 void loop() {
-  //poll the sensor every 50000 seconds
+  //poll the sensor every 60 seconds
   currentMillis = millis();
   if (currentMillis - prevMillis > pollInterval) {
     prevMillis = currentMillis;

@@ -5,11 +5,13 @@
 const int relayPin = D1;
 const int ledPin = BUILTIN_LED;
 
-Heater::Heater(DHT12& dht) :dht12(dht) {
+Heater::Heater() {
+    DHT12 dht12;
     pinMode(relayPin, OUTPUT);
     pinMode(ledPin, OUTPUT);
     digitalWrite(ledPin, HIGH);
-    _desiredTemp = 22;
+    _desiredTemp = 20;
+    _autoMode = true;
 }
 
 float Heater::getTemp() {
