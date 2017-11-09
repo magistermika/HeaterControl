@@ -20,7 +20,6 @@ unsigned long prevMillis = 0;
 unsigned long currentMillis = 0;
 
 WiFiServer server(80);
-//DHT12 dht12;
 Heater heater;
 
 void setup() {
@@ -29,7 +28,7 @@ void setup() {
   delay(10);
  
   // Connect to WiFi network
-  //WiFi.mode(WIFI_AP_STA);
+  WiFi.mode(WIFI_AP_STA);
   WiFi.hostname("summer");//why is this not working? LE: works with host.local
   
   Serial.println();
@@ -39,8 +38,10 @@ void setup() {
  
   WiFi.begin(ssid, password);
  
-  while (WiFi.status() != WL_CONNECTED) {
+  int checks = 0;
+  while (WiFi.status() != WL_CONNECTED  || checks < 10) {
     delay(500);
+    checks++;
     Serial.print(".");
   }
   Serial.println("");
@@ -110,7 +111,8 @@ void loop() {
   client.println("<!DOCTYPE HTML>");
   client.println("<html>");
   
-  client.println("<h1><a href=\"/\">Temperature Control <br>================</a><br></h1>");  
+  client.println("<h1><a href=\"/\">Temperature Control</h1>");  
+  client.println("");
   client.print("Heater is now   ");
   client.print(heater.heaterState());
   if(heater.heaterState() == false) {
@@ -118,23 +120,32 @@ void loop() {
     } else {
       client.print(" ON<br>");
     }
+
+const char* button1 = "Manual ON";
+const char* button2 = "Manual OFF";
+const char* button3 = "Auto Mode";        
   client.print("Mode set to: ");
   if(heater.isInAutoMode() == false) {
     client.print(" MANUAL<br>");
     } else {
       client.print(" AUTO<br>");
+      button3 = ">>AUTO MODE<<";        
     }
 
-
-
   client.println("<br>");
-  client.println("Click <a href=\"/Heater=ON\">here to turn heater ON</a><br>");
-  client.println("Click <a href=\"/Heater=OFF\">here to turn heater OFF</a><br><br>");
-  client.println("Click <a href=\"/Heater=AUTO\">here to set to AUTO mode</a><br>");
-  client.println("<a href=\"/temp-minus\">MINUS--</a> Temp: ");
+  client.println("<a href=\"/Heater=ON\"><button>");
+  client.println(button1);
+  client.println("</button></a>");
+  client.println("<a href=\"/Heater=AUTO\"><button>");
+  client.println(button3);
+  client.println("</button></a>");
+  client.println("<a href=\"/Heater=OFF\"><button>");
+  client.println("button2");
+  client.println("</button></a><br>");
+  
+  client.println("<a href=\"/temp-minus\"><button>MINUS--</button></a> Temp: ");
   client.println(heater.getDesiredTemp());
-  client.println(" C <a href=\"/temp-plus\"</a> PLUS++");
-  client.println("<br>");
+  client.println(" C <a href=\"/temp-plus\"</a> <button>PLUS++</button>");
   client.println("<br><br>");
 
   client.println("Temperature in Celsius : ");
