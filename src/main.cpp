@@ -52,6 +52,7 @@ void setup() {
   server.begin();
   Serial.println("Server started");
  
+  //mDNS to have the local hostname work
   MDNS.begin("summer");
   MDNS.addService("http", "tcp", 80);
 
