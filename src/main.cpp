@@ -3,6 +3,7 @@
 #include <settings.h>
 #include <Wire.h>
 #include <Heater.h>
+#include <EEPROM.h>
 //#include <FS.h>
 //#include <ESP8266mDNS.h>
 
@@ -24,7 +25,7 @@ Heater heater;
 
 void setup() {
   Wire.begin(sdaPin, sclPin);
-  Serial.begin(115200);
+  Serial.begin(9600); //115200
   delay(10);
  
   // Connect to WiFi network
@@ -140,7 +141,7 @@ const char* button3 = "Auto Mode";
   client.println(button3);
   client.println("</button></a>");
   client.println("<a href=\"/Heater=OFF\"><button>");
-  client.println("button2");
+  client.println(button2);
   client.println("</button></a><br>");
   
   client.println("<a href=\"/temp-minus\"><button>MINUS--</button></a> Temp: ");
