@@ -5,7 +5,7 @@
 #include <Heater.h>
 #include <EEPROM.h>
 //#include <FS.h>
-//#include <ESP8266mDNS.h>
+#include <ESP8266mDNS.h>
 
 //change wire pins because relay will be on D1
 const int sclPin = D5;
@@ -29,9 +29,9 @@ void setup() {
   delay(10);
  
   // Connect to WiFi network
-  WiFi.mode(WIFI_AP_STA);
-  WiFi.hostname("summer");//why is this not working? LE: works with host.local
-  
+  WiFi.hostname("summer");//why is this not working?
+  //WiFi.mode(WIFI_STA);
+
   Serial.println();
   Serial.println();
   Serial.print("Connecting to ");
@@ -52,6 +52,9 @@ void setup() {
   server.begin();
   Serial.println("Server started");
  
+  MDNS.begin("summer");
+  MDNS.addService("http", "tcp", 80);
+
   // Print the IP address
   Serial.print("Use this URL : ");
   Serial.print("http://");
