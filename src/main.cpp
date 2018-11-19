@@ -146,16 +146,16 @@ const char* button3 = "Auto Mode";
   
   client.println("<a href=\"/temp-minus\"><button>MINUS--</button></a> Temp: ");
   client.println(heater.getDesiredTemp());
-  client.println(" C <a href=\"/temp-plus\"</a> <button>PLUS++</button>");
-  client.println("<br><br>");
+  client.println(" C <a href=\"/temp-plus\"><button>PLUS++</button></a> <br>");
+  client.println("<br>");
 
   client.println("Temperature in Celsius : ");
-    client.println(heater.getTemp());
-    client.println("<br>");
-    client.print("Relative Humidity : ");
-    client.println(heater.getHumi());
-    client.println("<br>END");
-    client.println(counter);
+  client.print(heater.getTemp());
+  client.println(" C<br>");
+  client.print("Relative Humidity : ");
+  client.print(heater.getHumi());
+  client.println(" %<br>END");
+  client.println(counter);
 
   
   client.println("</html>");
