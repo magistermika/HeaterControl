@@ -25,7 +25,7 @@ Heater heater;
 
 void setup() {
   Wire.begin(sdaPin, sclPin);
-  Serial.begin(9600); //115200
+  Serial.begin(115200); 
   delay(10);
  
   // Connect to WiFi network
