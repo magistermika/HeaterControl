@@ -3,7 +3,7 @@
 #include <settings.h>
 #include <Wire.h>
 #include <Heater.h>
-#include <EEPROM.h>
+//#include <EEPROM.h>
 //#include <FS.h>
 #include <ESP8266mDNS.h>
 
@@ -16,21 +16,26 @@ const int pollInterval = 60000;
 const char* ssid = _ssid;
 const char* password = _password;
 
-unsigned long counter = 1;
+unsigned long counter = 0;
 unsigned long prevMillis = 0;
 unsigned long currentMillis = 0;
+
+String response;
+const char* button1 = "Manual ON";
+const char* button2 = "Manual OFF";
+const char* button3 = "Auto Mode";    
 
 WiFiServer server(80);
 Heater heater;
 
 void setup() {
   Wire.begin(sdaPin, sclPin);
-  Serial.begin(115200); 
+  Serial.begin(9600); 
   delay(10);
  
   // Connect to WiFi network
   WiFi.hostname("summer");//why is this not working?
-  //WiFi.mode(WIFI_STA);
+  WiFi.mode(WIFI_STA);
 
   Serial.println();
   Serial.println();
@@ -81,10 +86,10 @@ void loop() {
   }
  
   // Wait until the client sends some data
-  Serial.println("new client");
+  Serial.println("new client. waiting");
   while(!client.available()){
-    Serial.println("client wait");
-    delay(1);
+    Serial.print(".");
+    delay(10);
   }
  
   // Read the first line of the request
@@ -109,62 +114,55 @@ void loop() {
     heater.setDesiredTempMinus();
   }
  
-  // Return the response
-  client.println("HTTP/1.1 200 OK");
-  client.println("Content-Type: text/html");
-  client.println(""); //  do not forget this one
-  client.println("<!DOCTYPE HTML>");
-  client.println("<html>");
+  // Construct the response
+  response = "HTTP/1.1 200 OK\n";
+  response += "Content-Type: text/html \n\n";
+  response += "<!DOCTYPE HTML>\n";
+  response += "<html>\n";
   
-  client.println("<h1><a href=\"/\">Temperature Control</h1>");  
-  client.println("");
-  client.print("Heater is now   ");
-  client.print(heater.heaterState());
+  response += "<h1><a href=\"/\">Temperature Control</h1></a> \n";
+  response += "Heater is now   ";
+  response += heater.heaterState();
   if(heater.heaterState() == false) {
-    client.print("<off style=\"color:red\"> OFF</off><br>");
+    response += "<off style=\"color:red\"> OFF</off><br>";
     } else {
-      client.print(" ON<br>");
+      response += " ON<br>";
     }
-
-const char* button1 = "Manual ON";
-const char* button2 = "Manual OFF";
-const char* button3 = "Auto Mode";        
-  client.print("Mode set to: ");
+  response += "Mode set to: ";
   if(heater.isInAutoMode() == false) {
-    client.print(" MANUAL<br>");
+    response += " MANUAL<br>";
     } else {
-      client.print(" AUTO<br>");
+      response += " AUTO<br>";
       button3 = ">>AUTO MODE<<";        
     }
+  response += "<br>";
+  response += "<a href=\"/Heater=ON\"><button>";
+  response += button1;
+  response += "</button></a>";
+  response += "<a href=\"/Heater=AUTO\"><button>";
+  response += button3;
+  response += "</button></a>";
+  response += "<a href=\"/Heater=OFF\"><button>";
+  response += button2;
+  response += "</button></a><br>";
+  response += "<a href=\"/temp-minus\"><button>MINUS--</button></a> Temp: ";
+  response += heater.getDesiredTemp();
+  response += " C <a href=\"/temp-plus\"><button>PLUS++</button></a> <br><br>";
 
-  client.println("<br>");
-  client.println("<a href=\"/Heater=ON\"><button>");
-  client.println(button1);
-  client.println("</button></a>");
-  client.println("<a href=\"/Heater=AUTO\"><button>");
-  client.println(button3);
-  client.println("</button></a>");
-  client.println("<a href=\"/Heater=OFF\"><button>");
-  client.println(button2);
-  client.println("</button></a><br>");
+  response += "Temperature in Celsius : ";
+  response += heater.getTemp();
+  response += " C<br>";
+  response += "Relative Humidity : ";
+  response += heater.getHumi();
+  response += " %<br> Refresh counter: ";
+  response += counter;
+
+  response += "</html>";
   
-  client.println("<a href=\"/temp-minus\"><button>MINUS--</button></a> Temp: ");
-  client.println(heater.getDesiredTemp());
-  client.println(" C <a href=\"/temp-plus\"><button>PLUS++</button></a> <br>");
-  client.println("<br>");
+  client.print(response);
 
-  client.println("Temperature in Celsius : ");
-  client.print(heater.getTemp());
-  client.println(" C<br>");
-  client.print("Relative Humidity : ");
-  client.print(heater.getHumi());
-  client.println(" %<br>END");
-  client.println(counter);
-
-  
-  client.println("</html>");
- 
-  delay(1);
+  delay(100);
   Serial.println("Client disconnected");
   Serial.println("");
+  client.stop();
 }

@@ -10,7 +10,7 @@ Heater::Heater() {
     pinMode(relayPin, OUTPUT);
     pinMode(ledPin, OUTPUT);
     digitalWrite(ledPin, HIGH);
-    _desiredTemp = 18;
+    _desiredTemp = 19;
     _autoMode = true;
 }
 
