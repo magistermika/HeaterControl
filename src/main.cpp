@@ -3,8 +3,6 @@
 #include <settings.h>
 #include <Wire.h>
 #include <Heater.h>
-//#include <EEPROM.h>
-//#include <FS.h>
 #include <ESP8266mDNS.h>
 
 //change wire pins because relay will be on D1
